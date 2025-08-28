@@ -1,0 +1,33 @@
+{
+  "name": "feydeyai-extended",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+<<<<<<< HEAD
+    "next": "14.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/react": "^18.2.0",
+    "@types/node": "^20.0.0"
+=======
+    "axios": "^1.11.0",
+    "next": "^14.2.32",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.21",
+    "typescript": "^5.3.0"
+>>>>>>> fb39487 (Add axios and types)
+  }
+}
