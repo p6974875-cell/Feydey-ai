@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true
+  reactStrictMode: true,
+  swcMinify: true,
+  // Removed invalid "appDir" option
 };
 
 module.exports = nextConfig;
