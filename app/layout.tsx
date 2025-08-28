@@ -1,8 +1,14 @@
-export default function Home() {
+import "./globals.css";
+
+export const metadata = {
+  title: "Feydey AI",
+  description: "AI-powered video and content generation suite",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main style={{ fontFamily: "sans-serif", textAlign: "center", marginTop: "4rem" }}>
-      <h1>🚀 Feydey AI</h1>
-      <p>Welcome to your AI-powered video generation suite.</p>
-    </main>
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   );
 }
