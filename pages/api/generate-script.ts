@@ -1,25 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { openai } from "@/lib/openai";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { inputText } = req.body;
 
   try {
-    const { inputText } = req.body;
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // switchable with GROQ/OpenRouter fallback
-      messages: [
-        { role: "system", content: "You are a creative script writer for AI video generation." },
-        { role: "user", content: inputText },
-      ],
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: `Write a video script about: ${inputText}` }],
     });
 
-    const script = completion.choices[0].message?.content ?? "No script generated.";
-
+    const script = response.choices[0].message?.content || "No script generated.";
     res.status(200).json({ script });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to generate script." });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 }
