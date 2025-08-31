@@ -1,54 +1,62 @@
-const [images, setImages] = useState([]);
+import { useState } from "react";
 
-const handleGenerateImages = async () => {
-  const res = await fetch("/api/generateImages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ script, numImages: 4 }),
-  });
-  const data = await res.json();
-  setImages(data.images);
-};
+export default function Home() {
+  const [inputText, setInputText] = useState("");
+  const [script, setScript] = useState("");
+  const [loading, setLoading] = useState(false);
 
-...
+  const handleGenerate = async () => {
+    setLoading(true);
+    setScript("");
 
-{script && (
-  <div style={{ marginTop: "20px", whiteSpace: "pre-line" }}>
-    <h2>Generated Script:</h2>
-    <p>{script}</p>
-    <button onClick={handleGenerateImages}>Generate Images</button>
-  </div>
-)}
+    try {
+      const response = await fetch("/api/generate-script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inputText }),
+      });
 
-{images.length > 0 && (
-  <div style={{ marginTop: "20px" }}>
-    <h2>Generated Images:</h2>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
-      {images.map((img, i) => (
-        <div key={i}>
-          <img src={img.url} alt={img.prompt} style={{ width: "100%" }} />
-          <p>{img.prompt}</p>
-        </div>
-      ))}
-    </div>
-  </div>
-)}        }}
+      const data = await response.json();
+      if (data.script) {
+        setScript(data.script);
+      } else {
+        setScript("❌ Failed to generate script.");
+      }
+    } catch (err) {
+      console.error(err);
+      setScript("❌ Error connecting to server.");
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1>🎬 Feydey AI</h1>
+      <p>Enter your idea and let AI create a video script for you.</p>
+
+      <textarea
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        placeholder="Type your idea here..."
+        rows={5}
+        cols={50}
+        style={{ display: "block", marginBottom: "1rem" }}
+      />
+
+      <button
+        onClick={handleGenerate}
+        disabled={loading}
+        style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
       >
-        Generate
+        {loading ? "Generating..." : "Generate Script"}
       </button>
 
-      {response && (
-        <pre
-          style={{
-            marginTop: "2rem",
-            background: "#f4f4f4",
-            padding: "1rem",
-            borderRadius: "5px",
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {response}
-        </pre>
+      {script && (
+        <div style={{ marginTop: "2rem" }}>
+          <h2>📝 Generated Script:</h2>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{script}</pre>
+        </div>
       )}
     </div>
   );
