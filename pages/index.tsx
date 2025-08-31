@@ -1,40 +1,38 @@
-import { useState } from "react";
+const [images, setImages] = useState([]);
 
-export default function Home() {
-  const [inputText, setInputText] = useState("");
-  const [response, setResponse] = useState("");
+const handleGenerateImages = async () => {
+  const res = await fetch("/api/generateImages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ script, numImages: 4 }),
+  });
+  const data = await res.json();
+  setImages(data.images);
+};
 
-  async function handleGenerate() {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ inputText }),
-    });
-    const data = await res.json();
-    setResponse(JSON.stringify(data, null, 2));
-  }
+...
 
-  return (
-    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-      <h1>🎬 FadeAI – Your AI Video Creator</h1>
-      <textarea
-        rows={6}
-        cols={60}
-        placeholder="Enter your video script here..."
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-      />
-      <br />
-      <button
-        onClick={handleGenerate}
-        style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          fontSize: "16px",
-          background: "black",
-          color: "white",
-          borderRadius: "5px",
-        }}
+{script && (
+  <div style={{ marginTop: "20px", whiteSpace: "pre-line" }}>
+    <h2>Generated Script:</h2>
+    <p>{script}</p>
+    <button onClick={handleGenerateImages}>Generate Images</button>
+  </div>
+)}
+
+{images.length > 0 && (
+  <div style={{ marginTop: "20px" }}>
+    <h2>Generated Images:</h2>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+      {images.map((img, i) => (
+        <div key={i}>
+          <img src={img.url} alt={img.prompt} style={{ width: "100%" }} />
+          <p>{img.prompt}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}        }}
       >
         Generate
       </button>
